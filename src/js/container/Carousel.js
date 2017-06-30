@@ -6,32 +6,40 @@ class Carousel extends React.Component {
   constructor (props) {
     super(props);
 
-    this.DIRECTION_LEFT  = 2;
-    this.DIRECTION_RIGHT = 4;
-
     this.MOVE = 2;
     this.END  = 4;
 
-    this.btnPrev      = this.btnPrev.bind(this);
-    this.btnNext      = this.btnNext.bind(this);
-    this.animationEnd = this.animationEnd.bind(this);
+    this.updateScreenWidth = this.updateScreenWidth.bind(this);
+    this.btnPrev           = this.btnPrev.bind(this);
+    this.btnNext           = this.btnNext.bind(this);
+    this.animationEnd      = this.animationEnd.bind(this);
+    this.handlePan         = this.handlePan.bind(this);
 
-    this.handlePan    = this.handlePan.bind(this);
+    window.addEventListener('resize', this.updateScreenWidth);
+    this.SCREEN_WIDTH = screen.width;
 
     this.state = {
       index        : 1,
-
-      // -500 was default width of card item
-      location     : -500,
+      coordinate   : -this.SCREEN_WIDTH,
       useAnimation : true
     };
+  }
+
+  updateScreenWidth() {
+    this.SCREEN_WIDTH = screen.width;
+
+    this.setState({
+      index        : this.state.index,
+      coordinate   : (-this.SCREEN_WIDTH * this.state.index),
+      useAnimation : this.state.useAnimation
+    });
   }
 
   btnPrev() {
     if (this.state.index > 0) {
       this.setState({
         index        : this.state.index - 1,
-        location     : (-500 * (this.state.index - 1)),
+        coordinate   : (-this.SCREEN_WIDTH * (this.state.index - 1)),
         useAnimation : true
       });
     }
@@ -41,7 +49,7 @@ class Carousel extends React.Component {
     if (this.state.index < 5) {
       this.setState({
         index        : this.state.index + 1,
-        location     : (-500 * (this.state.index + 1)),
+        coordinate   : (-this.SCREEN_WIDTH * (this.state.index + 1)),
         useAnimation : true
       });
     }
@@ -52,7 +60,7 @@ class Carousel extends React.Component {
       case 5:
         this.setState({
           index        : 1,
-          location     : -500,
+          coordinate   : (-this.SCREEN_WIDTH * 1),
           useAnimation : false
         });
         break;
@@ -60,7 +68,7 @@ class Carousel extends React.Component {
       case 0:
         this.setState({
           index        : 4,
-          location     : -2000,
+          coordinate   : (-this.SCREEN_WIDTH * 4),
           useAnimation : false
         });
         break;
@@ -88,7 +96,7 @@ class Carousel extends React.Component {
         } else {
           this.setState({
             index        : this.state.index,
-            location     : (-500 * this.state.index),
+            coordinate   : (-this.SCREEN_WIDTH * this.state.index),
             useAnimation : true
           });
         }
@@ -97,7 +105,7 @@ class Carousel extends React.Component {
       case this.MOVE:
         this.setState({
           index        : this.state.index,
-          location     : (-500 * this.state.index) + event.deltaX,
+          coordinate   : (-this.SCREEN_WIDTH * this.state.index) + event.deltaX,
           useAnimation : false
         });
         break;
@@ -111,11 +119,15 @@ class Carousel extends React.Component {
     var animationArguments;
 
     if (this.state.useAnimation !== true) {
-      animationArguments = { transform: `translate3d(${ this.state.location.toString() }px, 0, 0)`,
-                        transition: 'none'};
+      animationArguments = {
+        transform: `translate3d(${ this.state.coordinate.toString() }px, 0, 0)`,
+        transition: 'none'
+      };
     } else {
 
-      animationArguments = { transform: `translate3d(${ this.state.location.toString() }px, 0, 0)` };
+      animationArguments = {
+        transform: `translate3d(${ this.state.coordinate.toString() }px, 0, 0)`
+      };
     }
 
     return (
@@ -123,7 +135,7 @@ class Carousel extends React.Component {
 
         {/* Current State Information */}
         <div>{ this.state.index.toString() }</div>
-        <div>{ this.state.location.toString() }</div>
+        <div>{ this.state.coordinate.toString() }</div>
         <div>{ this.state.useAnimation.toString() }</div>
 
         {/* Card Panel */}

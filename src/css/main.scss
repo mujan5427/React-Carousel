@@ -3,22 +3,22 @@
 .carousel-window-panel {
   margin: 0 auto;
   margin-bottom: 20px;
-  // width: 500px;
   width: 100%;
   overflow: hidden;
 
   > div:last-child {
     transition: transform .3s ease;
-    width: 3000px;
+    display: flex;
+    width: 100%;
 
     > div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: table;
+    text-align: center;
+    line-height: 180px;
     float: left;
     color: #ffffff;
     font-size: 8em;
-    width: 500px;
+    width: inherit;
     height: 180px;
 
     &:nth-of-type(1),
