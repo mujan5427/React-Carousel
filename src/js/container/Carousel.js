@@ -12,7 +12,6 @@ class Carousel extends React.Component {
     this.updateScreenWidth = this.updateScreenWidth.bind(this);
     this.btnPrev           = this.btnPrev.bind(this);
     this.btnNext           = this.btnNext.bind(this);
-    this.animationEnd      = this.animationEnd.bind(this);
     this.handlePan         = this.handlePan.bind(this);
 
     window.addEventListener('resize', this.updateScreenWidth);
@@ -55,29 +54,6 @@ class Carousel extends React.Component {
     }
   }
 
-  animationEnd() {
-    switch (this.state.index) {
-      case 5:
-        this.setState({
-          index        : 1,
-          coordinate   : (-this.SCREEN_WIDTH * 1),
-          useAnimation : false
-        });
-        break;
-
-      case 0:
-        this.setState({
-          index        : 4,
-          coordinate   : (-this.SCREEN_WIDTH * 4),
-          useAnimation : false
-        });
-        break;
-
-      default:
-        break;
-    }
-  }
-
   handlePan (event) {
     switch (event.eventType) {
       case this.END:
@@ -103,11 +79,27 @@ class Carousel extends React.Component {
         break;
 
       case this.MOVE:
-        this.setState({
-          index        : this.state.index,
-          coordinate   : (-this.SCREEN_WIDTH * this.state.index) + event.deltaX,
-          useAnimation : false
-        });
+        if (this.state.index === 5) {
+          this.setState({
+            index        : 1,
+            coordinate   : (-this.SCREEN_WIDTH * 1) + (this.state.coordinate - (-this.SCREEN_WIDTH * 5)),
+            useAnimation : false
+          });
+
+        } else if (this.state.index === 0) {
+          this.setState({
+            index        : 4,
+            coordinate   : (-this.SCREEN_WIDTH * 4) + (this.state.coordinate - (-this.SCREEN_WIDTH * 0)),
+            useAnimation : false
+          });
+
+        } else {
+          this.setState({
+            index        : this.state.index,
+            coordinate   : (-this.SCREEN_WIDTH * this.state.index) + event.deltaX,
+            useAnimation : false
+          });
+        }        
         break;
 
       default:
@@ -141,7 +133,7 @@ class Carousel extends React.Component {
         {/* Card Panel */}
         <Hammer onPan={ this.handlePan }>
           <section className='carousel-window-panel'>
-            <div style={ animationArguments } onTransitionEnd={ this.animationEnd }>
+            <div style={ animationArguments }>
               <div>4</div>
               <div>1</div>
               <div>2</div>
