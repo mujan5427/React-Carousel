@@ -16,7 +16,6 @@ class Carousel extends React.Component {
     this.btnNext      = this.btnNext.bind(this);
     this.animationEnd = this.animationEnd.bind(this);
 
-    this.handleSwipe  = this.handleSwipe.bind(this);
     this.handlePan    = this.handlePan.bind(this);
 
     this.state = {
@@ -29,7 +28,7 @@ class Carousel extends React.Component {
   }
 
   btnPrev() {
-    if (this.state.location !== 0) {
+    if (this.state.index > 0) {
       this.setState({
         index        : this.state.index - 1,
         location     : (-500 * (this.state.index - 1)),
@@ -39,7 +38,7 @@ class Carousel extends React.Component {
   }
 
   btnNext() {
-    if (this.state.location !== -2500) {
+    if (this.state.index < 5) {
       this.setState({
         index        : this.state.index + 1,
         location     : (-500 * (this.state.index + 1)),
@@ -49,8 +48,8 @@ class Carousel extends React.Component {
   }
 
   animationEnd() {
-    switch (this.state.location) {
-      case -2500:
+    switch (this.state.index) {
+      case 5:
         this.setState({
           index        : 1,
           location     : -500,
@@ -71,25 +70,16 @@ class Carousel extends React.Component {
     }
   }
 
-  handleSwipe (event) {
-    switch (event.direction) {
-      case this.DIRECTION_LEFT:
-        this.btnNext();
-        break;
-
-      case this.DIRECTION_RIGHT:
-        this.btnPrev();
-        break;
-
-      default:
-        break;
-    }
-  }
-
   handlePan (event) {
     switch (event.eventType) {
       case this.END:
-        if (event.deltaX <= -220) {
+        if (event.velocityX <= -0.5) {
+          this.btnNext();
+
+        } else if (event.velocityX >= 0.5) {
+          this.btnPrev();
+
+        } else if (event.deltaX <= -220) {
           this.btnNext();
 
         } else if (event.deltaX >= 220) {
@@ -137,7 +127,7 @@ class Carousel extends React.Component {
         <div>{ this.state.useAnimation.toString() }</div>
 
         {/* Card Panel */}
-        <Hammer onSwipe={ this.handleSwipe } onPan={ this.handlePan }>
+        <Hammer onPan={ this.handlePan }>
           <section className='carousel-window-panel'>
             <div style={ animationArguments } onTransitionEnd={ this.animationEnd }>
               <div>4</div>
