@@ -1,0 +1,52 @@
+@import 'reset';
+
+.carousel-window-panel {
+  margin: 0 auto;
+  margin-bottom: 20px;
+  // width: 500px;
+  width: 100%;
+  overflow: hidden;
+
+  > div:last-child {
+    transition: transform .3s ease;
+    width: 3000px;
+
+    > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: left;
+    color: #ffffff;
+    font-size: 8em;
+    width: 500px;
+    height: 180px;
+
+    &:nth-of-type(1),
+    &:nth-of-type(5) {
+      background-color: #f3ae4e;
+    }
+    &:nth-of-type(2),
+    &:nth-of-type(6) {
+      background-color: #d96383;
+    }
+    &:nth-of-type(3) {
+      background-color: #717ecd;
+    }
+    &:nth-of-type(4) {
+      background-color: #4ab471;
+    }
+  }
+  }
+}
+
+.carousel-dashboard-panel {
+  width: 100%;
+  text-align: center;
+
+  > button {
+    padding: 10px;
+    margin: 0 20px;
+    width: 100px;
+    cursor: pointer;
+  }
+}
