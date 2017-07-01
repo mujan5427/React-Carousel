@@ -167,8 +167,8 @@ class Carousel extends React.Component {
         <div>{ this.state.useAnimation.toString() }</div>
 
         {/* Card Panel */}
-        <Hammer onPan={ this.PanHandler } onTransitionEnd={ this.animationEndHandler }>
-          <section className='carousel-window-panel'>
+        <section className='carousel-window-panel'>
+          <Hammer onPan={ this.PanHandler } onTransitionEnd={ this.animationEndHandler }>
             <div style={ animationArguments }>
               <div>4</div>
               <div>1</div>
@@ -177,8 +177,8 @@ class Carousel extends React.Component {
               <div>4</div>
               <div>1</div>
             </div>
-          </section>
-        </Hammer>
+          </Hammer>
+        </section>
 
         {/* DashBoard */}
         <section className='carousel-dashboard-panel'>
