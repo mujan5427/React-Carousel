@@ -6,16 +6,39 @@ class Carousel extends React.Component {
   constructor (props) {
     super(props);
 
-    this.MOVE = 2;
-    this.END  = 4;
 
-    this.updateScreenWidth = this.updateScreenWidth.bind(this);
-    this.btnPrev           = this.btnPrev.bind(this);
-    this.btnNext           = this.btnNext.bind(this);
-    this.handlePan         = this.handlePan.bind(this);
+    /* * * * * * * * * * * * *
+     *                       *
+     *     Constant Area     *
+     *                       *
+     * * * * * * * * * * * * */
+
+    this.MOVE              = 2;
+    this.END               = 4;
+    this.SCREEN_WIDTH      = window.innerWidth;
+    this.HALF_SCREEN_WIDTH = this.SCREEN_WIDTH / 2;
+
+
+    /* * * * * * * * * * * * *
+     *                       *
+     *   Methods Bind Area   *
+     *                       *
+     * * * * * * * * * * * * */
+
+    this.updateScreenWidth   = this.updateScreenWidth.bind(this);
+    this.btnPrev             = this.btnPrev.bind(this);
+    this.btnNext             = this.btnNext.bind(this);
+    this.animationEndHandler = this.animationEndHandler.bind(this);
+    this.PanHandler          = this.PanHandler.bind(this);
+    this.rollbackCard        = this.rollbackCard.bind(this);
 
     window.addEventListener('resize', this.updateScreenWidth);
-    this.SCREEN_WIDTH = screen.width;
+
+    /* * * * * * * * * * * * *
+     *                       *
+     *    Component State    *
+     *                       *
+     * * * * * * * * * * * * */
 
     this.state = {
       index        : 1,
@@ -25,7 +48,8 @@ class Carousel extends React.Component {
   }
 
   updateScreenWidth() {
-    this.SCREEN_WIDTH = screen.width;
+    this.SCREEN_WIDTH      = window.innerWidth;
+    this.HALF_SCREEN_WIDTH = this.SCREEN_WIDTH / 2;
 
     this.setState({
       index        : this.state.index,
@@ -34,8 +58,31 @@ class Carousel extends React.Component {
     });
   }
 
+  // When card is in boundary then rollback to the right coordinate.
+  rollbackCard() {
+    if (this.state.index === 5) {
+      this.setState({
+        index        : 1,
+        coordinate   : -this.SCREEN_WIDTH * 1,
+        useAnimation : false
+      });
+
+    } else if (this.state.index === 0) {
+      this.setState({
+        index        : 4,
+        coordinate   : -this.SCREEN_WIDTH * 4,
+        useAnimation : false
+      });
+
+    }
+  }
+
+  animationEndHandler() {
+    this.rollbackCard();
+  }
+
   btnPrev() {
-    if (this.state.index > 0) {
+    if (this.state.index !== 0) {
       this.setState({
         index        : this.state.index - 1,
         coordinate   : (-this.SCREEN_WIDTH * (this.state.index - 1)),
@@ -45,7 +92,7 @@ class Carousel extends React.Component {
   }
 
   btnNext() {
-    if (this.state.index < 5) {
+    if (this.state.index !== 5) {
       this.setState({
         index        : this.state.index + 1,
         coordinate   : (-this.SCREEN_WIDTH * (this.state.index + 1)),
@@ -54,7 +101,7 @@ class Carousel extends React.Component {
     }
   }
 
-  handlePan (event) {
+  PanHandler (event) {
     switch (event.eventType) {
       case this.END:
         if (event.velocityX <= -0.5) {
@@ -63,10 +110,10 @@ class Carousel extends React.Component {
         } else if (event.velocityX >= 0.5) {
           this.btnPrev();
 
-        } else if (event.deltaX <= -220) {
+        } else if (event.deltaX <= -this.HALF_SCREEN_WIDTH) {
           this.btnNext();
 
-        } else if (event.deltaX >= 220) {
+        } else if (event.deltaX >= this.HALF_SCREEN_WIDTH) {
           this.btnPrev();
 
         } else {
@@ -79,19 +126,8 @@ class Carousel extends React.Component {
         break;
 
       case this.MOVE:
-        if (this.state.index === 5) {
-          this.setState({
-            index        : 1,
-            coordinate   : (-this.SCREEN_WIDTH * 1) + (this.state.coordinate - (-this.SCREEN_WIDTH * 5)),
-            useAnimation : false
-          });
-
-        } else if (this.state.index === 0) {
-          this.setState({
-            index        : 4,
-            coordinate   : (-this.SCREEN_WIDTH * 4) + (this.state.coordinate - (-this.SCREEN_WIDTH * 0)),
-            useAnimation : false
-          });
+        if (this.state.index === 5 || this.state.index === 0) {
+          this.rollbackCard();
 
         } else {
           this.setState({
@@ -99,7 +135,7 @@ class Carousel extends React.Component {
             coordinate   : (-this.SCREEN_WIDTH * this.state.index) + event.deltaX,
             useAnimation : false
           });
-        }        
+        }
         break;
 
       default:
@@ -131,7 +167,7 @@ class Carousel extends React.Component {
         <div>{ this.state.useAnimation.toString() }</div>
 
         {/* Card Panel */}
-        <Hammer onPan={ this.handlePan }>
+        <Hammer onPan={ this.PanHandler } onTransitionEnd={ this.animationEndHandler }>
           <section className='carousel-window-panel'>
             <div style={ animationArguments }>
               <div>4</div>
