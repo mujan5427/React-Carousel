@@ -81,6 +81,26 @@ class Carousel extends React.Component {
     this.rollbackCard();
   }
 
+  calculateIndexPickerList() {
+    var start = 1;
+    var end   = 4;
+    var indexPickerList  = [];
+
+    if (end !== 0) {
+      for (start; start <= end; start++) {
+
+        indexPickerList[start - 1] =
+        <span className={ this.state.index === start ? 'carousel-index-picker-active' : null }></span>;
+      }
+
+    } else {
+      indexPickerList = false;
+
+    }
+
+    return indexPickerList;
+  }
+
   btnPrev() {
     if (this.state.index !== 0) {
       this.setState({
@@ -178,6 +198,11 @@ class Carousel extends React.Component {
               <div>1</div>
             </div>
           </Hammer>
+
+          {/* Index Picker List */}
+          <div>
+            { this.calculateIndexPickerList() }
+          </div>
         </section>
 
         {/* DashBoard */}
