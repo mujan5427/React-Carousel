@@ -188,6 +188,8 @@ class Carousel extends React.Component {
 
         {/* Card Panel */}
         <section className='carousel-window-panel'>
+
+          {/* Card Display Area */}
           <Hammer onPan={ this.PanHandler } onTransitionEnd={ this.animationEndHandler }>
             <div style={ animationArguments }>
               <div>4</div>
