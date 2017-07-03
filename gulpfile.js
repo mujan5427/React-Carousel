@@ -15,6 +15,7 @@ const del         = require('del');
 
 const sourcePaths = {
   js           : 'src/js/**/*.js',
+  copy         : 'node_modules/font-awesome/fonts/**',
   scssForWatch : 'src/css/**/*.scss',
   scss         : 'src/css/main.scss',
   webpack      : 'src/dist/index.js'
@@ -45,6 +46,13 @@ gulp.task('cleanForSCSS', function() {
 
 gulp.task('cleanForBabel', function() {
   return del(['src/dist', 'static/js']);
+});
+
+// ======   Copy   ======
+
+gulp.task('copy', () => {
+  return gulp.src(sourcePaths.copy)
+          .pipe(gulp.dest(distributionPaths.copy));
 });
 
 // ======   SCSS   ======
@@ -99,4 +107,4 @@ gulp.task('watch', function() {
 // ======   Default   ======
 
 // called when you run `gulp` from cli
-gulp.task('default', ['watch', 'scss', 'webpack']);
+gulp.task('default', ['watch', 'copy', 'scss', 'webpack']);
