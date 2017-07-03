@@ -25,12 +25,12 @@ class Carousel extends React.Component {
      *                       *
      * * * * * * * * * * * * */
 
-    this.updateScreenWidth   = this.updateScreenWidth.bind(this);
-    this.btnPrev             = this.btnPrev.bind(this);
-    this.btnNext             = this.btnNext.bind(this);
-    this.animationEndHandler = this.animationEndHandler.bind(this);
-    this.PanHandler          = this.PanHandler.bind(this);
-    this.rollbackCard        = this.rollbackCard.bind(this);
+    this.updateScreenWidth    = this.updateScreenWidth.bind(this);
+    this.btnPrev              = this.btnPrev.bind(this);
+    this.btnNext              = this.btnNext.bind(this);
+    this.animationEndHandler  = this.animationEndHandler.bind(this);
+    this.PanHandler           = this.PanHandler.bind(this);
+    this.rollbackCard         = this.rollbackCard.bind(this);
 
     window.addEventListener('resize', this.updateScreenWidth);
 
@@ -90,7 +90,11 @@ class Carousel extends React.Component {
       for (start; start <= end; start++) {
 
         indexPickerList[start - 1] =
-        <span className={ this.state.index === start ? 'carousel-index-picker-active' : null }></span>;
+        <span
+          className={ this.state.index === start ? 'carousel-index-picker-active' : null }
+          key={ start }
+          onClick={ this.moveToSpecifiedIndex.bind(this, start) }
+        ></span>;
       }
 
     } else {
@@ -99,6 +103,14 @@ class Carousel extends React.Component {
     }
 
     return indexPickerList;
+  }
+
+  moveToSpecifiedIndex(specifiedIndex) {
+    this.setState({
+      index        : specifiedIndex,
+      coordinate   : (-this.SCREEN_WIDTH * specifiedIndex),
+      useAnimation : true
+    });
   }
 
   btnPrev() {
