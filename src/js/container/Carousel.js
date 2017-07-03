@@ -213,16 +213,19 @@ class Carousel extends React.Component {
             </div>
           </Hammer>
 
+          {/* DashBoard */}
+          <div className='carousel-dashboard carousel-button-prev'>
+            <i className='fa fa-angle-left' aria-hidden='true' onClick={ this.btnPrev }></i>
+          </div>
+
+          <div className='carousel-dashboard carousel-button-next'>
+            <i className='fa fa-angle-right' aria-hidden='true' onClick={ this.btnNext }></i>
+          </div>
+
           {/* Index Picker List */}
           <div>
             { this.calculateIndexPickerList() }
           </div>
-        </section>
-
-        {/* DashBoard */}
-        <section className='carousel-dashboard-panel'>
-          <button onClick={ this.btnPrev }>prev</button>
-          <button onClick={ this.btnNext }>next</button>
         </section>
       </div>
     );
