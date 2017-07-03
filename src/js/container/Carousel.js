@@ -198,11 +198,12 @@ class Carousel extends React.Component {
         <div>{ this.state.coordinate.toString() }</div>
         <div>{ this.state.useAnimation.toString() }</div>
 
-        {/* Card Panel */}
-        <section className='carousel-window-panel'>
+        <Hammer onPan={ this.PanHandler } onTransitionEnd={ this.animationEndHandler }>
 
-          {/* Card Display Area */}
-          <Hammer onPan={ this.PanHandler } onTransitionEnd={ this.animationEndHandler }>
+          {/* Card Panel */}
+          <section className='carousel-window-panel'>
+
+            {/* Card Display Area */}
             <div style={ animationArguments }>
               <div>4</div>
               <div>1</div>
@@ -211,22 +212,22 @@ class Carousel extends React.Component {
               <div>4</div>
               <div>1</div>
             </div>
-          </Hammer>
 
-          {/* DashBoard */}
-          <div className='carousel-dashboard carousel-button-prev'>
-            <i className='fa fa-angle-left' aria-hidden='true' onClick={ this.btnPrev }></i>
-          </div>
+            {/* DashBoard */}
+            <div className='carousel-dashboard carousel-button-prev' onClick={ this.btnPrev }>
+              <i className='fa fa-angle-left' aria-hidden='true'></i>
+            </div>
 
-          <div className='carousel-dashboard carousel-button-next'>
-            <i className='fa fa-angle-right' aria-hidden='true' onClick={ this.btnNext }></i>
-          </div>
+            <div className='carousel-dashboard carousel-button-next' onClick={ this.btnNext }>
+              <i className='fa fa-angle-right' aria-hidden='true'></i>
+            </div>
 
-          {/* Index Picker List */}
-          <div>
-            { this.calculateIndexPickerList() }
-          </div>
-        </section>
+            {/* Index Picker List */}
+            <div>
+              { this.calculateIndexPickerList() }
+            </div>
+          </section>
+        </Hammer>
       </div>
     );
   }
