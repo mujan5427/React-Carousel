@@ -17,6 +17,7 @@ class Carousel extends React.Component {
     this.END               = 4;
     this.SCREEN_WIDTH      = window.innerWidth;
     this.HALF_SCREEN_WIDTH = this.SCREEN_WIDTH / 2;
+    this.INTERVAL          = 2000;
 
 
     /* * * * * * * * * * * * *
@@ -25,12 +26,14 @@ class Carousel extends React.Component {
      *                       *
      * * * * * * * * * * * * */
 
-    this.updateScreenWidth    = this.updateScreenWidth.bind(this);
-    this.btnPrev              = this.btnPrev.bind(this);
-    this.btnNext              = this.btnNext.bind(this);
-    this.animationEndHandler  = this.animationEndHandler.bind(this);
-    this.PanHandler           = this.PanHandler.bind(this);
-    this.rollbackCard         = this.rollbackCard.bind(this);
+    this.startCarouselTimer         = this.startCarouselTimer.bind(this);
+    this.stopCarouselTimer          = this.stopCarouselTimer.bind(this);
+    this.updateScreenWidth          = this.updateScreenWidth.bind(this);
+    this.btnPrev                    = this.btnPrev.bind(this);
+    this.btnNext                    = this.btnNext.bind(this);
+    this.animationEndHandler        = this.animationEndHandler.bind(this);
+    this.PanHandler                 = this.PanHandler.bind(this);
+    this.rollbackCard               = this.rollbackCard.bind(this);
 
     window.addEventListener('resize', this.updateScreenWidth);
 
@@ -45,6 +48,48 @@ class Carousel extends React.Component {
       coordinate   : -this.SCREEN_WIDTH,
       useAnimation : true
     };
+  }
+
+
+  /* * * * * * * * * * * * *
+   *                       *
+   *  Component Lifecycle  *
+   *                       *
+   * * * * * * * * * * * * */
+
+  componentDidMount() {
+    this.startCarouselTimer();
+  }
+
+  componentWillUnmount() {
+    this.stopCarouselTimer();
+  }
+
+
+  /* * * * * * * * * * * * *
+   *                       *
+   *        Methods        *
+   *                       *
+   * * * * * * * * * * * * */
+
+  startCarouselTimer() {
+    this.carouselTimer = setInterval(this.btnNext, this.INTERVAL);
+  }
+
+  stopCarouselTimer() {
+    clearInterval(this.carouselTimer);
+    this.carouselTimer = 0;
+  }
+
+  restartCarouselTimer(callback) {
+    if (this.carouselTimer === 0) {
+      callback();
+      this.startCarouselTimer();
+
+    } else {
+      callback();
+
+    }
   }
 
   updateScreenWidth() {
@@ -106,6 +151,10 @@ class Carousel extends React.Component {
   }
 
   moveToSpecifiedIndex(specifiedIndex) {
+    if (this.carouselTimer !== 0) {
+      this.stopCarouselTimer();
+    }
+
     this.setState({
       index        : specifiedIndex,
       coordinate   : (-this.SCREEN_WIDTH * specifiedIndex),
@@ -214,11 +263,17 @@ class Carousel extends React.Component {
             </div>
 
             {/* DashBoard */}
-            <div className='carousel-dashboard carousel-button-prev' onClick={ this.btnPrev }>
+            <div
+              className='carousel-dashboard carousel-button-prev'
+              onClick={ this.restartCarouselTimer.bind(this, this.btnPrev) }
+            >
               <i className='fa fa-angle-left' aria-hidden='true'></i>
             </div>
 
-            <div className='carousel-dashboard carousel-button-next' onClick={ this.btnNext }>
+            <div
+              className='carousel-dashboard carousel-button-next'
+              onClick={ this.restartCarouselTimer.bind(this, this.btnNext) }
+            >
               <i className='fa fa-angle-right' aria-hidden='true'></i>
             </div>
 
