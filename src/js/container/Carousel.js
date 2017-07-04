@@ -26,14 +26,10 @@ class Carousel extends React.Component {
      *                       *
      * * * * * * * * * * * * */
 
-    this.startCarouselTimer         = this.startCarouselTimer.bind(this);
-    this.stopCarouselTimer          = this.stopCarouselTimer.bind(this);
-    this.updateScreenWidth          = this.updateScreenWidth.bind(this);
-    this.btnPrev                    = this.btnPrev.bind(this);
-    this.btnNext                    = this.btnNext.bind(this);
-    this.animationEndHandler        = this.animationEndHandler.bind(this);
-    this.PanHandler                 = this.PanHandler.bind(this);
-    this.rollbackCard               = this.rollbackCard.bind(this);
+    this.btnPrev             = this.btnPrev.bind(this);
+    this.btnNext             = this.btnNext.bind(this);
+    this.animationEndHandler = this.animationEndHandler.bind(this);
+    this.PanHandler          = this.PanHandler.bind(this);
 
     window.addEventListener('resize', this.updateScreenWidth);
 
