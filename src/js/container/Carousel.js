@@ -26,6 +26,7 @@ class Carousel extends React.Component {
      *                       *
      * * * * * * * * * * * * */
 
+    this.updateScreenWidth   = this.updateScreenWidth.bind(this);
     this.btnPrev             = this.btnPrev.bind(this);
     this.btnNext             = this.btnNext.bind(this);
     this.animationEndHandler = this.animationEndHandler.bind(this);
