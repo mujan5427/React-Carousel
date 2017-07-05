@@ -4,7 +4,7 @@ import Carousel from './container/Carousel';
 
 
 ReactDOM.render(
-  <Carousel>
+  <Carousel useDashboard={ true } useAutomaticLoop={ true }>
     <div>4</div>
     <div>1</div>
     <div>2</div>

@@ -6,18 +6,20 @@ class Carousel extends React.Component {
   constructor (props) {
     super(props);
 
+
     /* * * * * * * * * * * * *
      *                       *
      *     Constant Area     *
      *                       *
      * * * * * * * * * * * * */
 
-    this.MOVE              = 2;
-    this.END               = 4;
-    this.SCREEN_WIDTH      = window.innerWidth;
-    this.HALF_SCREEN_WIDTH = this.SCREEN_WIDTH / 2;
-    this.INTERVAL          = 2000;
-    this.CARD_TOTAL        = this.props.children.length - 2;
+    this.MOVE               = 2;
+    this.END                = 4;
+    this.SCREEN_WIDTH       = window.innerWidth;
+    this.HALF_SCREEN_WIDTH  = this.SCREEN_WIDTH / 2;
+    this.CARD_TOTAL         = this.props.children.length - 2;
+    this.USE_AUTOMATIC_LOOP = this.props.useAutomaticLoop !== undefined ? this.props.useAutomaticLoop : false;
+    this.INTERVAL           = 2000;
 
 
     /* * * * * * * * * * * * *
@@ -33,6 +35,7 @@ class Carousel extends React.Component {
     this.PanHandler          = this.PanHandler.bind(this);
 
     window.addEventListener('resize', this.updateScreenWidth);
+
 
     /* * * * * * * * * * * * *
      *                       *
@@ -55,11 +58,15 @@ class Carousel extends React.Component {
    * * * * * * * * * * * * */
 
   componentDidMount() {
-    this.startCarouselTimer();
+    if (this.USE_AUTOMATIC_LOOP) {
+      this.startCarouselTimer();
+    }
   }
 
   componentWillUnmount() {
-    this.stopCarouselTimer();
+    if (this.USE_AUTOMATIC_LOOP) {
+      this.stopCarouselTimer();
+    }
   }
 
 
@@ -79,7 +86,7 @@ class Carousel extends React.Component {
   }
 
   restartCarouselTimer(callback) {
-    if (this.carouselTimer === 0) {
+    if (this.carouselTimer === 0 && this.USE_AUTOMATIC_LOOP === true) {
       callback();
       this.startCarouselTimer();
 
@@ -148,7 +155,7 @@ class Carousel extends React.Component {
   }
 
   moveToSpecifiedIndex(specifiedIndex) {
-    if (this.carouselTimer !== 0) {
+    if (this.carouselTimer !== 0 && this.USE_AUTOMATIC_LOOP === true) {
       this.stopCarouselTimer();
     }
 
@@ -222,6 +229,7 @@ class Carousel extends React.Component {
   }
 
   render() {
+    const { useDashboard = true } = this.props;
     var animationArguments;
 
     if (this.state.useAnimation !== true) {
@@ -255,19 +263,23 @@ class Carousel extends React.Component {
             </div>
 
             {/* DashBoard */}
-            <div
-              className='carousel-dashboard carousel-button-prev'
-              onClick={ this.restartCarouselTimer.bind(this, this.btnPrev) }
-            >
-              <i className='fa fa-angle-left' aria-hidden='true'></i>
-            </div>
+            { useDashboard &&
+              <div
+                className='carousel-dashboard carousel-button-prev'
+                onClick={ this.restartCarouselTimer.bind(this, this.btnPrev) }
+              >
+                <i className='fa fa-angle-left' aria-hidden='true'></i>
+              </div>
+            }
 
-            <div
-              className='carousel-dashboard carousel-button-next'
-              onClick={ this.restartCarouselTimer.bind(this, this.btnNext) }
-            >
-              <i className='fa fa-angle-right' aria-hidden='true'></i>
-            </div>
+            { useDashboard &&
+              <div
+                className='carousel-dashboard carousel-button-next'
+                onClick={ this.restartCarouselTimer.bind(this, this.btnNext) }
+              >
+                <i className='fa fa-angle-right' aria-hidden='true'></i>
+              </div>
+            }
 
             {/* Index Picker List */}
             <div>
