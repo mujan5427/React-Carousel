@@ -6,7 +6,6 @@ class Carousel extends React.Component {
   constructor (props) {
     super(props);
 
-
     /* * * * * * * * * * * * *
      *                       *
      *     Constant Area     *
@@ -18,6 +17,7 @@ class Carousel extends React.Component {
     this.SCREEN_WIDTH      = window.innerWidth;
     this.HALF_SCREEN_WIDTH = this.SCREEN_WIDTH / 2;
     this.INTERVAL          = 2000;
+    this.CARD_TOTAL        = this.props.children.length - 2;
 
 
     /* * * * * * * * * * * * *
@@ -101,7 +101,7 @@ class Carousel extends React.Component {
 
   // When card is in boundary then rollback to the right coordinate.
   rollbackCard() {
-    if (this.state.index === 5) {
+    if (this.state.index === (this.CARD_TOTAL + 1)) {
       this.setState({
         index        : 1,
         coordinate   : -this.SCREEN_WIDTH * 1,
@@ -110,8 +110,8 @@ class Carousel extends React.Component {
 
     } else if (this.state.index === 0) {
       this.setState({
-        index        : 4,
-        coordinate   : -this.SCREEN_WIDTH * 4,
+        index        : this.CARD_TOTAL,
+        coordinate   : -this.SCREEN_WIDTH * this.CARD_TOTAL,
         useAnimation : false
       });
 
@@ -124,7 +124,7 @@ class Carousel extends React.Component {
 
   calculateIndexPickerList() {
     var start = 1;
-    var end   = 4;
+    var end   = this.CARD_TOTAL;
     var indexPickerList  = [];
 
     if (end !== 0) {
@@ -169,7 +169,7 @@ class Carousel extends React.Component {
   }
 
   btnNext() {
-    if (this.state.index !== 5) {
+    if (this.state.index !== (this.CARD_TOTAL + 1)) {
       this.setState({
         index        : this.state.index + 1,
         coordinate   : (-this.SCREEN_WIDTH * (this.state.index + 1)),
@@ -203,7 +203,7 @@ class Carousel extends React.Component {
         break;
 
       case this.MOVE:
-        if (this.state.index === 5 || this.state.index === 0) {
+        if (this.state.index === (this.CARD_TOTAL + 1) || this.state.index === 0) {
           this.rollbackCard();
 
         } else {
@@ -250,12 +250,7 @@ class Carousel extends React.Component {
 
             {/* Card Display Area */}
             <div style={ animationArguments }>
-              <div>4</div>
-              <div>1</div>
-              <div>2</div>
-              <div>3</div>
-              <div>4</div>
-              <div>1</div>
+              { this.props.children }
             </div>
 
             {/* DashBoard */}
