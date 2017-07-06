@@ -13,13 +13,12 @@ class Carousel extends React.Component {
      *                       *
      * * * * * * * * * * * * */
 
-    this.MOVE               = 2;
-    this.END                = 4;
-    this.SCREEN_WIDTH       = window.innerWidth;
-    this.HALF_SCREEN_WIDTH  = this.SCREEN_WIDTH / 2;
-    this.CARD_TOTAL         = this.props.children.length - 2;
-    this.USE_AUTOMATIC_LOOP = this.props.useAutomaticLoop !== undefined ? this.props.useAutomaticLoop : false;
-    this.INTERVAL           = 2000;
+    this.ID                  = new Date().getTime().toString(36);
+    this.MOVE                = 2;
+    this.END                 = 4;
+    this.CARD_TOTAL          = this.props.children.length - 2;
+    this.USE_AUTOMATIC_LOOP  = this.props.useAutomaticLoop !== undefined ? this.props.useAutomaticLoop : false;
+    this.INTERVAL            = 2000;
 
 
     /* * * * * * * * * * * * *
@@ -28,13 +27,13 @@ class Carousel extends React.Component {
      *                       *
      * * * * * * * * * * * * */
 
-    this.updateScreenWidth   = this.updateScreenWidth.bind(this);
+    this.updateCarouselWidth   = this.updateCarouselWidth.bind(this);
     this.btnPrev             = this.btnPrev.bind(this);
     this.btnNext             = this.btnNext.bind(this);
     this.animationEndHandler = this.animationEndHandler.bind(this);
     this.PanHandler          = this.PanHandler.bind(this);
 
-    window.addEventListener('resize', this.updateScreenWidth);
+    window.addEventListener('resize', this.updateCarouselWidth);
 
 
     /* * * * * * * * * * * * *
@@ -45,7 +44,7 @@ class Carousel extends React.Component {
 
     this.state = {
       index        : 1,
-      coordinate   : -this.SCREEN_WIDTH,
+      coordinate   : 0,
       useAnimation : true
     };
   }
@@ -61,6 +60,15 @@ class Carousel extends React.Component {
     if (this.USE_AUTOMATIC_LOOP) {
       this.startCarouselTimer();
     }
+
+    this.CAROUSEL_WIDTH      = document.getElementById(this.ID).getBoundingClientRect().width;
+    this.CAROUSEL_HALF_WIDTH = this.CAROUSEL_WIDTH / 2;
+
+    this.setState({
+      index        : 1,
+      coordinate   : (-this.CAROUSEL_WIDTH * this.state.index),
+      useAnimation : this.state.useAnimation
+    });
   }
 
   componentWillUnmount() {
@@ -96,13 +104,13 @@ class Carousel extends React.Component {
     }
   }
 
-  updateScreenWidth() {
-    this.SCREEN_WIDTH      = window.innerWidth;
-    this.HALF_SCREEN_WIDTH = this.SCREEN_WIDTH / 2;
+  updateCarouselWidth() {
+    this.CAROUSEL_WIDTH      = document.getElementById(this.ID).getBoundingClientRect().width;
+    this.CAROUSEL_HALF_WIDTH = this.CAROUSEL_WIDTH / 2;
 
     this.setState({
       index        : this.state.index,
-      coordinate   : (-this.SCREEN_WIDTH * this.state.index),
+      coordinate   : (-this.CAROUSEL_WIDTH * this.state.index),
       useAnimation : this.state.useAnimation
     });
   }
@@ -112,14 +120,14 @@ class Carousel extends React.Component {
     if (this.state.index === (this.CARD_TOTAL + 1)) {
       this.setState({
         index        : 1,
-        coordinate   : -this.SCREEN_WIDTH * 1,
+        coordinate   : -this.CAROUSEL_WIDTH * 1,
         useAnimation : false
       });
 
     } else if (this.state.index === 0) {
       this.setState({
         index        : this.CARD_TOTAL,
-        coordinate   : -this.SCREEN_WIDTH * this.CARD_TOTAL,
+        coordinate   : -this.CAROUSEL_WIDTH * this.CARD_TOTAL,
         useAnimation : false
       });
 
@@ -161,7 +169,7 @@ class Carousel extends React.Component {
 
     this.setState({
       index        : specifiedIndex,
-      coordinate   : (-this.SCREEN_WIDTH * specifiedIndex),
+      coordinate   : (-this.CAROUSEL_WIDTH * specifiedIndex),
       useAnimation : true
     });
   }
@@ -170,7 +178,7 @@ class Carousel extends React.Component {
     if (this.state.index !== 0) {
       this.setState({
         index        : this.state.index - 1,
-        coordinate   : (-this.SCREEN_WIDTH * (this.state.index - 1)),
+        coordinate   : (-this.CAROUSEL_WIDTH * (this.state.index - 1)),
         useAnimation : true
       });
     }
@@ -180,7 +188,7 @@ class Carousel extends React.Component {
     if (this.state.index !== (this.CARD_TOTAL + 1)) {
       this.setState({
         index        : this.state.index + 1,
-        coordinate   : (-this.SCREEN_WIDTH * (this.state.index + 1)),
+        coordinate   : (-this.CAROUSEL_WIDTH * (this.state.index + 1)),
         useAnimation : true
       });
     }
@@ -195,16 +203,16 @@ class Carousel extends React.Component {
         } else if (event.velocityX >= 0.5) {
           this.btnPrev();
 
-        } else if (event.deltaX <= -this.HALF_SCREEN_WIDTH) {
+        } else if (event.deltaX <= -this.CAROUSEL_HALF_WIDTH) {
           this.btnNext();
 
-        } else if (event.deltaX >= this.HALF_SCREEN_WIDTH) {
+        } else if (event.deltaX >= this.CAROUSEL_HALF_WIDTH) {
           this.btnPrev();
 
         } else {
           this.setState({
             index        : this.state.index,
-            coordinate   : (-this.SCREEN_WIDTH * this.state.index),
+            coordinate   : (-this.CAROUSEL_WIDTH * this.state.index),
             useAnimation : true
           });
         }
@@ -217,7 +225,7 @@ class Carousel extends React.Component {
         } else {
           this.setState({
             index        : this.state.index,
-            coordinate   : (-this.SCREEN_WIDTH * this.state.index) + event.deltaX,
+            coordinate   : (-this.CAROUSEL_WIDTH * this.state.index) + event.deltaX,
             useAnimation : false
           });
         }
@@ -255,7 +263,7 @@ class Carousel extends React.Component {
         <Hammer onPan={ this.PanHandler } onTransitionEnd={ this.animationEndHandler }>
 
           {/* Card Panel */}
-          <section className='carousel-window-panel'>
+          <section className='carousel-window-panel' id={ this.ID }>
 
             {/* Card Display Area */}
             <div style={ animationArguments }>

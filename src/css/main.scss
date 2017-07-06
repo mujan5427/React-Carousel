@@ -2,11 +2,9 @@
 @import "../../node_modules/font-awesome/scss/font-awesome";
 
 .carousel-window-panel {
-  margin: 0 auto;
-  margin-bottom: 20px;
   overflow: hidden;
   position: relative;
-  width: 100%;
+  margin: 0 3.75%;
 
   > div:first-child {
     display: flex;
